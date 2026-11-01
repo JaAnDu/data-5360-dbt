@@ -1,3 +1,30 @@
 version: 2
 
-models: [{name: oliver_dim_customer, description: Oliver customer dimension}, {name: oliver_dim_date, description: Oliver date dimension}, {name: oliver_dim_employee, description: Oliver employee dimension}, {name: oliver_dim_product, description: Oliver product dimension}, {name: oliver_dim_store, description: Oliver store dimension}, {name: fact_sales, description: Oliver sales fact at order line grain}, {name: sales, description: Oliver sales semantic layer for analysis}]
+models:
+  - name: oliver_dim_customer
+    description: "Oliver customer dimension"
+  - name: oliver_dim_date
+    description: "Oliver date dimension"
+  - name: oliver_dim_employee
+    description: "Oliver employee dimension"
+  - name: oliver_dim_product
+    description: "Oliver product dimension"
+  - name: oliver_dim_store
+    description: "Oliver store dimension"
+  - name: fact_sales
+    description: "Oliver sales fact at order line grain"
+  - name: sales
+    description: "Oliver sales model"
+  - name: stg_employee_certifications
+    description: "Staging model for employee certifications. Parses the certification_json column into certification_name, certification_cost, and certification_awarded_date. One row per certification completion."
+  - name: fact_certification
+    description: "Certification fact table. Grain: one row per employee certification awarded (employee + certification + award date). Keys: date_key (oliver_dim_date) and employee_key (oliver_dim_employee). Metrics: certification_name and certification_cost."
+    columns:
+      - name: date_key
+        description: "Foreign key to oliver_dim_date (date the certification was awarded)"
+      - name: employee_key
+        description: "Foreign key to oliver_dim_employee"
+      - name: certification_name
+        description: "Name of the certification earned"
+      - name: certification_cost
+        description: "Cost of the certification"
