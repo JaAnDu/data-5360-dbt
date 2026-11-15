@@ -3,16 +3,93 @@ version: 2
 models:
   - name: oliver_dim_customer
     description: "Oliver customer dimension"
+    columns:
+      - name: cust_key
+        description: "Surrogate key for the customer dimension"
+        tests:
+          - unique
+          - not_null
   - name: oliver_dim_date
     description: "Oliver date dimension"
+    columns:
+      - name: date_key
+        description: "Surrogate key for the date dimension"
+        tests:
+          - unique
+          - not_null
+      - name: dayofweek
+        description: "Name of the day of the week"
+        tests:
+          - accepted_values:
+              values: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+      - name: quarter
+        description: "Quarter of the year"
+        tests:
+          - accepted_values:
+              values: [1, 2, 3, 4]
+              quote: false
   - name: oliver_dim_employee
     description: "Oliver employee dimension"
+    columns:
+      - name: employee_key
+        description: "Surrogate key for the employee dimension"
+        tests:
+          - unique
+          - not_null
   - name: oliver_dim_product
     description: "Oliver product dimension"
+    columns:
+      - name: product_key
+        description: "Surrogate key for the product dimension"
+        tests:
+          - unique
+          - not_null
   - name: oliver_dim_store
     description: "Oliver store dimension"
+    columns:
+      - name: store_key
+        description: "Surrogate key for the store dimension"
+        tests:
+          - unique
+          - not_null
   - name: fact_sales
     description: "Oliver sales fact at order line grain"
+    columns:
+      - name: cust_key
+        description: "Foreign key to oliver_dim_customer"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_customer')
+              field: cust_key
+      - name: date_key
+        description: "Foreign key to oliver_dim_date"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_date')
+              field: date_key
+      - name: store_key
+        description: "Foreign key to oliver_dim_store"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_store')
+              field: store_key
+      - name: product_key
+        description: "Foreign key to oliver_dim_product"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_product')
+              field: product_key
+      - name: employee_key
+        description: "Foreign key to oliver_dim_employee"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_employee')
+              field: employee_key
   - name: sales
     description: "Oliver sales model"
   - name: stg_employee_certifications
@@ -22,8 +99,18 @@ models:
     columns:
       - name: date_key
         description: "Foreign key to oliver_dim_date (date the certification was awarded)"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_date')
+              field: date_key
       - name: employee_key
         description: "Foreign key to oliver_dim_employee"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('oliver_dim_employee')
+              field: employee_key
       - name: certification_name
         description: "Name of the certification earned"
       - name: certification_cost
